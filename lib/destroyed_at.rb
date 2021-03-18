@@ -73,16 +73,19 @@ module DestroyedAt
 
   # Set an object's destroyed_at time to nil.
   def restore
-    state = nil
+    restored = false
     run_callbacks(:restore) do
-      if state = (self.class.unscoped.where(self.class.primary_key => id).update_all(destroyed_at: nil) == 1)
+      primary_key = self.class.primary_key
+      records = self.class.unscoped.where(primary_key => send(primary_key))
+      restored = records.update_all(destroyed_at: nil) == 1
+      if restored
         _restore_associations
         write_attribute_without_type_cast('destroyed_at', nil)
         @destroyed = false
         true
       end
     end
-    state
+    restored
   end
 
   def persisted?
