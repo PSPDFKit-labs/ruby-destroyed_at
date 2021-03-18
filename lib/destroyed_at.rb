@@ -38,7 +38,7 @@ module DestroyedAt
   def destroy(timestamp = nil)
     with_transaction_returning_status do
       timestamp ||= @marked_for_destruction_at || current_time_from_proper_timezone
-      write_attribute_without_type_cast(:destroyed_at, timestamp)
+      write_attribute_without_type_cast('destroyed_at', timestamp)
 
       run_callbacks(:destroy) do
         destroy_associations
@@ -70,7 +70,7 @@ module DestroyedAt
     run_callbacks(:restore) do
       if state = (self.class.unscoped.where(self.class.primary_key => id).update_all(destroyed_at: nil) == 1)
         _restore_associations
-        write_attribute_without_type_cast(:destroyed_at, nil)
+        write_attribute_without_type_cast('destroyed_at', nil)
         @destroyed = false
         true
       end
