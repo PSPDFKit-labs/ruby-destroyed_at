@@ -51,11 +51,11 @@ module DestroyedAt
         self.class.unscoped.where(self.class.primary_key => id).update_all(destroyed_at: timestamp)
         @destroyed = true
 
-        next @destroyed unless ActiveRecord::VERSION::STRING >= '4.2'
         each_counter_cached_associations do |association|
           foreign_key = association.reflection.foreign_key.to_sym
           next if destroyed_by_association && destroyed_by_association.foreign_key.to_sym == foreign_key
           next unless send(association.reflection.name)
+
           association.decrement_counters
         end
 
