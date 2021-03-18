@@ -37,12 +37,7 @@ module DestroyedAt
   # Set an object's destroyed_at time.
   def destroy(timestamp = nil)
     with_transaction_returning_status do
-      timestamp ||=
-        if defined?(@marked_for_destruction_at) && @marked_for_destruction_at
-          @marked_for_destruction_at
-        else
-          current_time_from_proper_timezone
-        end
+      timestamp ||= @marked_for_destruction_at || current_time_from_proper_timezone
 
       write_attribute_without_type_cast('destroyed_at', timestamp)
 
@@ -96,6 +91,7 @@ module DestroyedAt
   private
 
   def _set_destruction_state
+    @marked_for_destruction_at ||= nil
     @destroyed = destroyed_at.present? if has_attribute?(:destroyed_at)
     # Don't stop the other callbacks from running
     true
