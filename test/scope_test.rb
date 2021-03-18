@@ -19,13 +19,13 @@ describe 'Scopes' do
       let(:destroyed_comments) { Comment.destroyed }
 
       it 'returns records that have been destroyed' do
-        destroyed_comments.must_include comment_2
-        destroyed_comments.must_include comment_4
+        assert_includes destroyed_comments, comment_2
+        assert_includes destroyed_comments, comment_4
       end
 
       it 'does not return current records' do
-        destroyed_comments.wont_include comment_1
-        destroyed_comments.wont_include comment_3
+        refute_includes destroyed_comments, comment_1
+        refute_includes destroyed_comments, comment_3
       end
     end
 
@@ -33,19 +33,19 @@ describe 'Scopes' do
       let(:destroyed_comments) { post.comments.destroyed }
 
       it 'returns destroyed records beloning in the relation' do
-        destroyed_comments.must_include comment_2
+        assert_includes destroyed_comments, comment_2
       end
 
       it 'does not return destroyed records that are outside the relation' do
-        destroyed_comments.wont_include comment_4
+        refute_includes destroyed_comments, comment_4
       end
 
       it 'does not return current records in the relation' do
-        destroyed_comments.wont_include comment_1
+        refute_includes destroyed_comments, comment_1
       end
 
       it 'does not return current records that are outside the relation' do
-        destroyed_comments.wont_include comment_3
+        refute_includes destroyed_comments, comment_3
       end
     end
 
@@ -54,17 +54,18 @@ describe 'Scopes' do
 
       before do
         post.destroy
-        comment_2.update(destroyed_at: post.destroyed_at - 1.hour)
+        comment_2.restore
+        comment_2.destroy(post.destroyed_at - 1.hour)
       end
 
       it 'returns all child records with a destroyed_at time that matches the passed in time' do
-        destroyed_comments.must_include comment_1
+        assert_includes destroyed_comments, comment_1
       end
 
       it 'does not return child records with a destroyed_at time that does not match the passed in time' do
-        destroyed_comments.wont_include comment_2
-        destroyed_comments.wont_include comment_3
-        destroyed_comments.wont_include comment_4
+        refute_includes destroyed_comments, comment_2
+        refute_includes destroyed_comments, comment_3
+        refute_includes destroyed_comments, comment_4
       end
     end
   end

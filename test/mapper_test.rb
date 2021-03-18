@@ -38,7 +38,7 @@ class MapperTest < ActiveSupport::TestCase
     end
 
     begin
-      params = @set.recognize_path('/authors/:id/restore', method: 'put')
+      @set.recognize_path('/authors/:id/restore', method: 'put')
       assert false, 'this should not be reached'
     rescue ActionController::RoutingError
       assert true, 'path not recognized'
@@ -51,7 +51,7 @@ class MapperTest < ActiveSupport::TestCase
     end
 
     begin
-      params = @set.recognize_path('/author/restore', method: 'put')
+      @set.recognize_path('/author/restore', method: 'put')
       assert false, 'this should not be reached'
     rescue ActionController::RoutingError
       assert true, 'path not recognized'
