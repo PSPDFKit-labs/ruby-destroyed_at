@@ -43,7 +43,9 @@ module DestroyedAt
 
       run_callbacks(:destroy) do
         destroy_associations
-        self.class.unscoped.where(self.class.primary_key => id).update_all(destroyed_at: timestamp)
+        primary_key = self.class.primary_key
+        self.class.unscoped.where(primary_key => send(primary_key)).update_all(destroyed_at: timestamp)
+        @_trigger_destroy_callback = true
         @destroyed = true
 
         each_counter_cached_associations do |association|
@@ -57,6 +59,10 @@ module DestroyedAt
         @destroyed
       end
     end
+  end
+
+  def trigger_transactional_callbacks?
+    super || @_trigger_destroy_callback
   end
 
   def mark_for_destruction(timestamp = nil)
@@ -92,6 +98,7 @@ module DestroyedAt
 
   def _set_destruction_state
     @marked_for_destruction_at ||= nil
+    @_trigger_destroy_callback = false
     @destroyed = destroyed_at.present? if has_attribute?(:destroyed_at)
     # Don't stop the other callbacks from running
     true
