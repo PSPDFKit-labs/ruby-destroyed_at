@@ -108,7 +108,7 @@ module DestroyedAt
       if assoc.options[:through] && assoc.options[:dependent] == :destroy
         assoc = association(assoc.options[:through])
       end
-      assoc.association_scope.each do |r|
+      assoc.send(:association_scope).each do |r|
         if r.respond_to?(:restore) && r.destroyed_at == self.destroyed_at
           r.restore
           reload_association = true
