@@ -40,6 +40,8 @@ ActiveRecord::Base.connection.execute(%{CREATE TABLE people (id INTEGER PRIMARY 
 ActiveRecord::Base.connection.execute(%{CREATE TABLE pets (id INTEGER PRIMARY KEY, person_id INTEGER);})
 ActiveRecord::Base.connection.execute(%{CREATE TABLE likes (id INTEGER PRIMARY KEY, likeable_id INTEGER, likeable_type TEXT, destroyed_at DATETIME);})
 
+ActiveRecord::Base.logger = ActiveSupport::Logger.new(STDOUT) if ENV['LOG_SQL']
+
 class Author < ActiveRecord::Base
   has_many :posts, dependent: :destroy
   has_one :avatar, dependent: :destroy
