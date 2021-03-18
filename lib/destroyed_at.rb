@@ -16,7 +16,7 @@ module DestroyedAt
 
   def self.destroy_target_of_association(owner, target)
     if target.respond_to?(:destroyed_at) && owner.respond_to?(:destroyed_at)
-      target.destroy(owner.destroyed_at)
+      target.destroy(owner.destroyed_at) unless target.destroyed?
     else
       # this will delete the target if DestroyedAt is not included.
       target.destroy
