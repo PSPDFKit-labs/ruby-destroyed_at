@@ -16,6 +16,10 @@ Add the `destroyed_at` gem to your `Gemfile`
 gem 'destroyed_at'
 ```
 
+This repo includes also has versions for [rails 5](https://github.com/PSPDFKit-labs/ruby-destroyed_at/tree/rails5) and [rails 6](https://github.com/PSPDFKit-labs/ruby-destroyed_at/tree/rails6)
+
+---
+
 You can either mixin the modules on a case-by-case basis:
 
 ```ruby
@@ -64,7 +68,7 @@ class User < ActiveRecord::Base
 end
 
 user = User.create
-user.destroy 
+user.destroy
 # => true
 user.destroyed_at
 # => <DateTime>
@@ -73,7 +77,7 @@ user.destroyed_at
 #### Warning: Dependent relations with destroy ####
 Be careful when destroying models that have `dependent:
 :destroy`. This will **delete**, not destroy, the associated model if
-said model does not `include DestroyedAt`. 
+said model does not `include DestroyedAt`.
 
 ### Restoring ####
 When you'd like to "restore" a record, call the `#restore` method on
@@ -98,7 +102,7 @@ user.destroyed_at
 ```
 
 ### Destroyed Scope ###
-When you include the `DestroyedAt` module, it sets a default scope of 
+When you include the `DestroyedAt` module, it sets a default scope of
 `where(destroyed_at: nil)`. It also defines a scope called `.destroyed`
 which removes the default scope and finds the records of a relation
 `where.not(destroyed_at: nil)`. This is different than calling `unscoped`
@@ -116,13 +120,13 @@ class User < ActiveRecord::Base
   before_restore :before_restore_action
   after_restore  :after_restore_action
   around_restore :around_restore_action
-  
+
   private
-  
+
   def before_restore_action
     ...
   end
-  
+
   def after_restore_action
     ...
   end
@@ -142,7 +146,7 @@ If you are using the `uniqueness` validator you will need to run it as:
 validates :email, uniqueness: { conditions: -> { where(destroyed_at: nil) } }
 ```
 
-Rails will by default not include default_scopes when querying for uniqueness. Rather than monkey 
+Rails will by default not include default_scopes when querying for uniqueness. Rather than monkey
 patching the validator we believe this is the best solution.
 
 ## Authors ##
